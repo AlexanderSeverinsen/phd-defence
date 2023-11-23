@@ -1,0 +1,56 @@
+
+## The IPCC Sixth Assessment Report was released in 2022
+
+:::: {.columns}
+
+::: {.column width="40%"}
+![](figures/IPCC_6report_frontpage.png){width=80%}
+:::
+
+::: {.column width="60%"}
+
+<!-- Making a typewriter effect to showcase António Guterres remarks at the IPCC 2022 press conference  -->
+<!--  https://media.un.org/en/asset/k1x/k1xcijxjhp -->
+```{=html}
+
+
+<p style="font-size:30px;" onclick="typeWriter()">UN Secretary-General António Guterres during the press conference... </p>
+
+<blockquote cite="http://www.worldwildlife.org/who/index.html">
+<p style="font-size:25px;" id="IPCC_typewriter"> <small></small></p>
+</blockquote>
+
+<script>
+  var i = 0;
+  var txt = '...I have seen many scientific reports in my time, but nothing like this. The facts are undeniable. Human activities have warmed the climate at a rate not seen in at least the past 2000 years...';
+  
+  var speed = 60;
+  
+  function typeWriter() {
+    if (i < txt.length) {
+      document.getElementById("IPCC_typewriter").innerHTML += txt.charAt(i);
+      i++;
+      setTimeout(typeWriter, speed);
+    }
+  }
+
+</script>
+```
+
+:::
+
+::::
+
+::: {.notes}
+- The report exposes how climate change impacts people and the planet
+- 234 experts from 64 countries contributed (and agrees!) 
+- Many ecosystems are at the point of no return
+:::
+
+
+
+
+
+
+
+<!-- https://www.ipcc.ch/2022/02/28/ipcc-chair-statement-wgii-ar6-press-conference/ -->

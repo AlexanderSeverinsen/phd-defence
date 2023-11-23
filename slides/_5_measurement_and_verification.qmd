@@ -1,0 +1,154 @@
+<!-- Should have boxes that appear in different places to explain this figure. Step 1:, Step 2:, etc  -->
+
+```{r}
+library(tidyverse)
+x<-as.data.frame(c(1:24))
+colnames(x)<-"x"
+set.seed(1) # we need the draws to be the same the first 12 points as the lines should be on top of each other - that will not be able to see! ;-)
+x$twox<-rnorm(24, mean=40, sd=2) # baseline and imagined continuation without ECM
+set.seed(1) 
+x$x2<-rnorm(24, mean=40, sd=2) # put the line on top of the other
+x$x2[x$x >= 12] <- rnorm(13,mean=20, sd=2) # this is the savings :-)
+
+# Set colours #
+
+blue<-rgb(0.8, 0.8, 1, alpha=0.25)
+clear<-rgb(1, 0, 0, alpha=0.0001)
+
+# Define region to fill 
+
+x$fill <- "no fill"
+x$fill[(x$x >= 12)] <- "fill"
+```
+
+## Measurement and Verification
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.75"} </br> 
+[Paper 1-5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+```{r}
+
+# lets draw the thing!
+ggplot(x, aes(x=x, y=twox)) + 
+  geom_line(aes(y = x2)) +
+  scale_y_continuous(expand = c(0, 0), limits=c(0,55)) +
+  scale_x_continuous(expand = c(0, 0), limits=c(0,24)) + 
+  scale_fill_manual(values=c(clear,blue))+
+  geom_vline(xintercept = 11, linetype = "dashed", colour = "grey20") +
+  theme(axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank()) +
+  xlab("Months") +
+  ylab("Energy consumption (kWh)") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 12)) +
+  annotate("text", x = 5, y = 5, label = "Baseline period", size=4) +
+  annotate("text", x = 5, y = 3, label = "(Before the retrofitting)", size=3) +
+  annotate("text", x = 17, y = 5, label = "Reporting period", size=4) +
+  annotate("text", x = 17, y = 3, label = "(After the retrofitting)", size=3) +
+  annotate("text", x = 18, y = 15, label = "Actual energy use", size=4)
+
+
+
+
+```
+
+## Measurement and Verification
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.75"} </br> 
+[Paper 1-5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+```{r}
+
+# lets draw the thing!
+ggplot(x, aes(x=x, y=twox)) + 
+  geom_line(aes(y = twox), linetype="dashed") + 
+  geom_line(aes(y = x2)) +
+  scale_y_continuous(expand = c(0, 0), limits=c(0,55)) +
+  scale_x_continuous(expand = c(0, 0), limits=c(0,24)) + 
+  scale_fill_manual(values=c(clear,blue))+
+  geom_vline(xintercept = 11, linetype = "dashed", colour = "grey20") +
+  theme(axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank()) +
+  xlab("Months") +
+  ylab("Energy consumption (kWh)") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 12)) +
+  annotate("text", x = 5, y = 5, label = "Baseline period", size=4) +
+  annotate("text", x = 5, y = 3, label = "(Before the retrofitting)", size=3) +
+  annotate("text", x = 17, y = 5, label = "Reporting period", size=4) +
+  annotate("text", x = 17, y = 3, label = "(After the retrofitting)", size=3) +
+  annotate("text", x = 18, y = 15, label = "Actual energy use", size=4) +
+  annotate("text", x = 18, y = 48, label = "Energy use without retrofitting", size=4) +
+  annotate("text", x = 18, y = 45, label = "Objective is to use a model to estimate this line", size=3)
+
+```
+
+## Measurement and Verification
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.75"} </br> 
+[Paper 1-5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+```{r}
+
+# lets draw the thing!
+ggplot(x, aes(x=x, y=twox)) + 
+  geom_line(aes(y = twox), linetype="dashed") + 
+  geom_line(aes(y = x2)) +
+  geom_ribbon(data=subset(x, x >= 11), 
+              aes(ymin=twox,ymax=x2), fill="blue", alpha=0.3) +
+  scale_y_continuous(expand = c(0, 0), limits=c(0,55)) +
+  scale_x_continuous(expand = c(0, 0), limits=c(0,24)) + 
+  scale_fill_manual(values=c(clear,blue))+
+  geom_vline(xintercept = 11, linetype = "dashed", colour = "grey20") +
+  annotate(
+    geom = "segment",
+    x = 16, 
+    y = 20,
+    xend = 16, 
+    yend = 40,
+    colour = "blue",
+    arrow = arrow(length = unit(0.3, "cm"), type = "closed") # the red arrow shows what the kwh would be without the ECM
+  ) +
+  theme(axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank()) +
+  xlab("Months") +
+  ylab("Energy consumption (kWh)") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 12)) +
+  annotate("text", x = 5, y = 5, label = "Baseline period", size=4) +
+  annotate("text", x = 5, y = 3, label = "(Before the retrofitting)", size=3) +
+  annotate("text", x = 17, y = 5, label = "Reporting period", size=4) +
+  annotate("text", x = 17, y = 3, label = "(After the retrofitting)", size=3) +
+  annotate("text", x = 18, y = 15, label = "Actual energy use", size=4) +
+  annotate("text", x = 18, y = 48, label = "Energy use without retrofitting", size=4) +
+  annotate("text", x = 18, y = 45, label = "Objective is to use a model to estimate this line", size=3) +
+  annotate("text", x = 15.5, y = 30, label = "Savings", color="blue", size=4, angle=90)
+
+```
+
+
+
+
+

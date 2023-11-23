@@ -1,0 +1,224 @@
+---
+title: ""
+format: 
+  revealjs:
+    theme: ["../fonts_aneo.scss"]
+    css: ../styles.css
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+
+Authors <- c("Severinsen, Alexander, and Øystein Myrland", 
+             "Severinsen, Alexander, and Rob J. Hyndman", 
+             "Severinsen, Alexander, and Øystein Myrland", 
+             "Severinsen, Alexander, and Helen Marita Holst Sørensen", 
+             "Fagerström, Jonathan, Kari Aamodt Espegren, Josefine Selj, and Alexander Severinsen")
+             
+Titles <- c("Statistical learning to estimate energy savings from retrofitting in the Norwegian food retail market", 
+            "Quantification of Energy Savings from Energy Conservation Measures in Buildings Using Machine Learning", 
+            "ShinyRBase: Near real-time energy saving models using reactive programming", 
+            "A 3-step framework to benchmark potential and actual energy savings in retrofitting projects", 
+            "Forecasting and Technoeconomic Optimization of PV-Battery Systems for Commercial Buildings")
+Year <- c(2022, 2019, 2022, 2022, 2019)
+
+Published <- c("Renewable and Sustainable Energy Reviews, Volume 167, 112691",
+              "ECEEE Summer Study Proceedings, 757--66",
+              "Applied Energy, Volume 325, 119798",
+              "Unpublished",
+              "ECEEE Summer Study Proceedings, 949--54")
+
+Summary <- c("Improving the classical weekly approach using energy-temperature curves. Suggesting a simple, but well specified regression model on an hourly level",
+             "Comparing the regression model with a more advanced approach. Very similar results.",
+             "Propose a web application framework to model energy savings",
+             "Benchmarking energy savings and efficiency from a retrofitting project in 34 grocery stores",
+             "Investigate profitability of peak shaving where battery storage was only profitable when forecasting was deployed")
+
+Production <- c("Petter Arnestad, Einar-Johan Hansen, Stian Berger",
+                "Petter Arnestad, Einar-Johan Hansen, Stian Berger",
+                "Petter Arnestad, Einar-Johan Hansen, Stian Berger",
+                "",
+                "")
+
+df_papers <- tibble(Authors, Titles, Year, Published, Summary, Production)   
+
+```
+
+## A diagram of the thesis
+
+<!--
+  style A fill:#f9f
+  style B fill:#f9f
+  style G fill:#f9f
+  style I fill:#f9f
+-->
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+```
+
+:::
+
+. . .
+
+::: {.absolute top="23%" left="55%"}
+::: {style="font-size: 0.5em"}
+
+- Energy data from Elhub. Central repository for all meters
+- Met.no public open API
+- API with building owners
+
+:::
+:::
+
+
+
+
+## A diagram of the thesis
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  C(Energy saving models) --> K(Boosting)
+  B[(Database)] --> C(Energy saving models)
+  style D fill:#f9f
+  style J fill:#f9f
+  C(Energy saving models) --> D(Broken line model)
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark)
+```
+
+:::
+
+::: {.absolute top="45%" left="55%"}
+::: {style="font-size: 0.5em"}
+
+
+Paper 1 Energy models
+
+- Improved traditional approach (weekly)
+- Introducing the Tao Vanilla benchmarking model (hours)
+- Demonstrating
+
+
+:::
+:::
+
+## A diagram of the thesis
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  C(Energy saving models) --> K(Boosting)
+  B[(Database)] --> C(Energy saving models)
+  style K fill:#f9f
+  style J fill:#f9f
+  C(Energy saving models) --> D(Broken line model)
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark)
+```
+
+:::
+
+::: {.absolute top="45%" left="55%"}
+::: {style="font-size: 0.5em"}
+
+Paper 2 Energy models
+
+- Improved traditional approach (weekly)
+- Introducing the Tao Vanilla benchmarking model (hours)
+- Demonstrating
+
+:::
+:::
+
+
+## A diagram of the thesis
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  C(Energy saving models) --> K(Boosting)
+  B[(Database)] --> C(Energy saving models)
+  C(Energy saving models) --> D(Broken line model)
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark)
+  style J fill:#f9f
+  style E fill:#f9f
+  style A fill:#f9f
+  style G fill:#f9f
+  style B fill:#f9f
+  style C fill:#f9f
+  J(Tao Vanilla </br> benchmark) --> E(Web app framework)
+  D(Broken line model) --> E(Framework WEB app)
+  E(Web app framework) <--> |Model saved </br> Updated cont.|B[(Database)]
+```
+
+:::
+
+::: {.absolute top="45%" left="55%"}
+::: {style="font-size: 0.5em"}
+
+Paper 3 Web framework
+
+- Demonstrating reactive programming
+- Bla bla bla
+- Bla bla bla
+
+:::
+:::
+
+
+## A diagram of the thesis
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  B[(Database)] --> C(Energy saving models)
+  C(Energy saving models) --> D(Broken line model)
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark)
+  D(Broken line model) --> H(Energy efficiency)
+  J(Tao Vanilla </br> benchmark) -->   H(Energy efficiency)
+```
+
+:::
+
+::: {.absolute top="45%" left="55%"}
+::: {style="font-size: 0.5em"}
+
+Paper 4 Energy efficiency
+
+- Data envelopment analysis
+- Bla bla bla
+- Bla bla bla
+
+:::
+:::
+
+
+

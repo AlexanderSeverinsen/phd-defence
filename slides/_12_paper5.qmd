@@ -1,0 +1,172 @@
+
+## Peak shaving 
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 5 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+::: {.absolute top="15%" left="0%"}
+<!-- Showing only the peaks -->
+```{r}
+#| echo: false
+#| fig-height: 4
+#| fig-width: 5.5
+library(tidyverse)
+load("data/ecm_data_TVB_pred.Rdata")
+peak_shave <- ecm_data_TVB_pred %>% dplyr::filter(start_date >= '2021-04-14 00:00:00' & start_date <= '2021-04-14 23:00:00') 
+
+
+ggplot(data = peak_shave) +
+  geom_line(aes(x = start_date, y = kwh), color = "blue") +
+  theme_minimal() +
+  labs(
+    y = "Loads (kW)",
+    x = "Date",
+    title = "Example: shaving the peaks"
+  ) +
+  annotate("text", x= as.POSIXct("2021-04-14 06:00:00"), y = 43, label = "Peak") +
+  annotate("text", x= as.POSIXct("2021-04-14 09:00:00"), y = 46, label = "Peak") +
+  annotate("text", x= as.POSIXct("2021-04-14 18:00:00"), y = 44, label = "Peak") 
+```
+:::
+
+
+::: {.absolute top="25%" left="52%"}
+::: {style="font-size: 0.55em"}
+::: {.incremental}
+- The grid owner wants to reduce the **peaks** to stabilize the grid
+- Thus, tariffs for large loads are more expensive
+- Objective of paper was to improve the economics of solar panels and batteries with load forecasting 
+- Building with annual consumption 2900 MWh, 891 kW max peak
+:::
+:::
+:::
+
+
+
+## Peak shaving 
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 5 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+
+::: {.absolute top="15%" left="0%"}
+<!-- Forecast based peak shaving  -->
+```{r}
+#| echo: false
+#| fig-height: 4
+#| fig-width: 5.5
+load("data/ecm_data_TVB_pred.Rdata")
+peak_shave <- ecm_data_TVB_pred %>% dplyr::filter(start_date >= '2021-04-14 00:00:00' & start_date <= '2021-04-14 23:00:00') 
+
+
+ggplot(data = peak_shave) +
+  geom_line(aes(x = start_date, y = kwh), color = "blue") +
+  theme_minimal() +
+  labs(
+    y = "Loads (kW)",
+    x = "Date",
+    title = "Example: shaving the peaks"
+  ) +
+  annotate("text", x= as.POSIXct("2021-04-14 06:00:00"), y = 43, label = "Peak") +
+  annotate("text", x= as.POSIXct("2021-04-14 09:00:00"), y = 46, label = "Peak") +
+  annotate("text", x= as.POSIXct("2021-04-14 18:00:00"), y = 44, label = "Peak") +
+  annotate("text", x= as.POSIXct("2021-04-14 08:00:00"), y = 40, label = "Forecast", color="steelblue") +
+  annotate("text", x= as.POSIXct("2021-04-14 18:20:00"), y = 40, label = "Forecast", color="steelblue") +
+  geom_segment(aes(x = as.POSIXct("2021-04-14 05:00:00"), y =41, xend=as.POSIXct("2021-04-14 11:00:00"), yend=41), color="steelblue", linetype = 2) +
+  geom_segment(aes(x = as.POSIXct("2021-04-14 16:30:00"), y =41, xend=as.POSIXct("2021-04-14 20:00:00"), yend=41), color="steelblue", linetype = 2) 
+```
+:::
+
+::: {.absolute top="25%" left="52%"}
+::: {style="font-size: 0.55em"}
+::: {.incremental}
+- Battery storage was only economically beneficial when forecasting was deployed
+- Most of the savings came from **peak shaving**, not from increased self-consumption
+:::
+:::
+:::
+
+
+::: {.fragment .fade-in}
+::: {.absolute top="75%" left="0%"}
+::: {.callout-note icon=false appearance="minimal"}
+::: {style="font-size: 0.55em"}
+Fagerström, Jonathan, Kari Aamodt Espegren, Josefine Selj, and Alexander Severinsen. 2019. “Forecasting and Technoeconomic Optimization of PV-Battery Systems for Commercial Buildings.” In ECEEE Summer Study Proceedings, 949–54, <https://www.eceee.org/library/conference_proceedings/eceee_Summer_Studies/2019/5-smart-and-sustainable-communities/forecasting-and-technoeconomic-optimization-of-pv-battery-systems-for-commercial-buildings/>
+:::
+:::
+:::
+:::
+
+<!--
+## Peak shaving 
+
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 5 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+::: {.absolute top="15%" left="0%"}
+```{r}
+#| echo: false
+#| fig-height: 4
+#| fig-width: 5.5
+Month <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+Case_c <- c(12,9,11,6,15,27,18,22,24,32,26,17)
+Case_d <- c(5,0,0,0,9,10,8,8,15,8,11,0) 
+
+df <- tibble(Month,Case_c,Case_d)
+
+df$Month <- factor(df$Month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+
+
+df %>%
+  ggplot(aes(x=Month, group=1)) +
+  geom_line(aes(y=Case_d),color="black") +
+  geom_line(aes(y=Case_c), color="steelblue", linetype="dashed") +
+  theme_minimal() +
+  labs(
+    x = "",
+    y="% peak shaving",
+    title="Monthly results - Peak shaving (%) ") +
+  annotate("text", x= "Oct", y = 33, label = "32%")
+
+```
+:::
+
+-->
+
+
+
+
+
+
+
+
+
+
+

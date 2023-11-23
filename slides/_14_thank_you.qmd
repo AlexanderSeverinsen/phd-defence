@@ -1,0 +1,29 @@
+
+## 
+
+::: {.absolute top="5%" left="23%"}
+![](figures/student_saying_thanks.png){width=70%}
+:::
+
+
+::: {.absolute top="91%" left="23%"}
+::: {style="font-size: 0.35em"}
+Credit: OPEN AI DALL-E *"Digital art of almost 50 year old male saying thank you to the audience"*
+::: 
+:::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

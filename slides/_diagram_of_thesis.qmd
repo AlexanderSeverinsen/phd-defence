@@ -1,0 +1,264 @@
+
+## Data used in the papers
+
+
+::: {.absolute top="22%" left="5%"}
+<!--https://unpkg.com/mermaid@0.5.6/exdoc/all.html#styling-and-classes -->
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+```
+
+:::
+
+. . .
+
+::: {.absolute top="23%" left="55%"}
+::: {style="font-size: 0.5em"}
+
+- Energy data collected from Elhub on an hourly level 
+- Temperature data was collected from Met.no through publicly open API
+- Building data: Location, name and size through customer API
+- 41 retrofitting projects used throughout the 5 papers in this thesis
+
+:::
+:::
+
+::: {.notes}
+- ELhub = central repository for meter readings for all buildings in Norway
+- Production and consumption
+- Owned by Statnett (datterselskap)
+:::
+
+
+## Paper 1 - Weeks versus hours 
+
+::: {.absolute top="22%" left="5%"}
+<!--  Colors from https://www.schemecolor.com/blue-grey.php?utm_content=cmp-true -->
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  B[(Database)] --> C(Energy saving models)
+  style C fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style D fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style J fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  C(Energy saving models) --> D(Broken line model)
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark </br> model)
+```
+
+:::
+
+::: {.absolute top="25%" left="55%"}
+
+::: {style="font-size: 0.5em"}
+- Two statistical methods to estimate energy savings from retrofitting
+- Improved approach on the traditional Energy-Temperature curve (weeks)
+- Demonstrating the Tao Vanilla benchmarking model (hours)
+- Energy savings 25% - 56% <!-- Maybe the results table in this side, 5 stores  -->
+:::
+
+
+::: {.callout-note icon=false appearance="minimal"}
+
+::: {style="font-size: 0.35em"}
+Severinsen, Alexander, and Øystein Myrland. 2022. “Statistical learning to estimate energy savings from retrofitting in the Norwegian food retail market”. Renewable and Sustainable Energy Reviews, Volume 167, 112691. <https://doi.org/10.1016/j.rser.2022.112691>
+:::
+
+:::
+
+
+:::
+
+
+
+## Paper 2 - Easy versus advanced
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  C(Energy saving models) --> K(Gradient </br> Boosting)
+  B[(Database)] --> C(Energy saving models)
+  style C fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style K fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style J fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark </br> model)
+```
+
+:::
+
+::: {.absolute top="25%" left="55%"}
+::: {style="font-size: 0.5em"}
+
+- *Linear regression* versus *Gradient boosting*
+- Estimate energy savings with low expected savings (<10%)
+- Less cost than using sub-meters
+- Both approaches prove reliable
+
+:::
+
+::: {.callout-note icon=false appearance="minimal"}
+
+::: {style="font-size: 0.35em"}
+Severinsen, Alexander, and Rob J. Hyndman. 2019. “Quantification of Energy Savings from Energy Conservation Measures in Buildings Using Machine Learning”. In ECEEE Summer Study Proceedings, 757– 66, <https://www.eceee.org/library/conference_proceedings/eceee_Summer_Studies/2019/4-monitoring-and-evaluation-for-greater-impact/quantification-of-energy-savings-from-energy-conservation-measures-in-buildings-using-machine-learning>
+:::
+
+:::
+
+
+:::
+
+
+## Paper 3 - Web framework to estimate energy savings
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  B[(Database)] --> C(Energy saving models)
+  C(Energy saving models) -.-> D(Broken line model)
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark)
+  style D fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px, stroke-dasharray: 5, 5;
+  style J fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style E fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style A fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style G fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style B fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style C fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  style I fill:#B3C4CF, stroke:#7E9CBE, stroke-width:2px;
+  J(Tao Vanilla </br> benchmark) --> E(Web app framework)
+  D(Broken line model) -.-> E(Framework WEB app)
+  E(Web app framework) <--> |Model saved </br> Updated cont.|B[(Database)]
+```
+
+:::
+
+::: {.absolute top="25%" left="55%"}
+
+::: {style="font-size: 0.5em"}
+- Reactive programming using `R/Shiny`
+- Fast development & automated energy savings report
+- Not dependent on the energy analyst
+- As of today 1 241 buildings are monitored continuously 
+:::
+
+::: {.callout-note icon=false appearance="minimal"}
+::: {style="font-size: 0.35em"}
+Severinsen, Alexander, and Øystein Myrland. 2022. “ShinyRBase: Near real-time energy saving models using reactive programming”. Applied Energy, Volume 325, 119798. <https://doi.org/10.1016/j.apenergy.2022.119798>
+:::
+:::
+
+::: {.fragment .fade-in}
+
+::: {.callout-note appearance="minimal"}
+::: {style="font-size: 0.35em"}
+**Getting the methods into production would have never been possible without the genius code from the fingertips of Einar-Johan Hansen and Stian Berger (@Capia) - and years of endless discussions with Petter Arnested, and other collaborators!**
+:::
+:::
+
+:::
+
+
+
+:::
+
+
+## Paper 4 - Benchmarking energy efficiency
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  B[(Database)] --> C(Energy saving models)
+  C(Energy saving models) --> D(Broken line model)
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark)
+  D(Broken line model) --> H(Energy efficiency)
+  J(Tao Vanilla </br> benchmark) -->   H(Energy efficiency)
+```
+
+:::
+
+::: {.absolute top="25%" left="55%"}
+
+::: {style="font-size: 0.5em"}
+
+- Change in the energy efficiency before and after a renovation project in 34 grocery stores
+- *Broken line* model during **audit phase** of project (input to retrofitting strategy)
+- Van Tao hourly model during **implementation phase** to optimize technical infrastructure
+- Holistic view of both energy savings and efficiency across the building portfolio
+
+:::
+
+::: {.callout-note icon=false appearance="minimal"}
+
+::: {style="font-size: 0.35em"}
+Severinsen, Alexander and Holst, Helen Marita, A 3-Step Framework to Benchmark Potential and Actual Energy Savings in Retrofitting Projects. Available at SSRN: <https://ssrn.com/abstract=4181531> or <http://dx.doi.org/10.2139/ssrn.4181531>
+:::
+
+:::
+
+
+:::
+
+
+## Paper 5 Peak shaving / battery control
+
+::: {.absolute top="22%" left="5%"}
+
+```{mermaid}
+%%| fig-width: 5
+flowchart TD
+  A(Energy data) --> B[(Database)]
+  G(Metrological data) --> B[(Database)]
+  I(Building data) --> B[(Database)]
+  B[(Database)] --> C(Energy saving models)
+  C(Energy saving models) --> D(Boosting)
+  C(Energy saving models) --> J(Tao Vanilla </br> benchmark)
+  D(Boosting) --> H(Peak shaving / Battery control)
+  J(Tao Vanilla </br> benchmark) -->   H(Peak shaving / battery control)
+```
+
+:::
+
+::: {.absolute top="25%" left="55%"}
+::: {style="font-size: 0.5em"}
+
+- Demonstrate the profitability with peak shaving in Norway for a commercial building
+- Improving the economics of solar panels and batteries with load forecasting 
+- Optimize the net present cost of the systems with Homer Energy Software that
+- Results show that battery storage was only economically beneficial when forecasting was deployed
+
+:::
+
+
+::: {.callout-note icon=false appearance="minimal"}
+
+::: {style="font-size: 0.35em"}
+Fagerström, Jonathan, Kari Aamodt Espegren, Josefine Selj, and Alexander Severinsen. 2019. “Forecasting and Technoeconomic Optimization of PV-Battery Systems for Commercial Buildings.” In ECEEE Summer Study Proceedings, 949–54, <https://www.eceee.org/library/conference_proceedings/eceee_Summer_Studies/2019/5-smart-and-sustainable-communities/forecasting-and-technoeconomic-optimization-of-pv-battery-systems-for-commercial-buildings/>
+:::
+
+:::
+
+
+
+:::
+
+

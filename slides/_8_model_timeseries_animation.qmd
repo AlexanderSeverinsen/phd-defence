@@ -1,0 +1,398 @@
+
+<!-- {{< video hhmpeg_crop_eng.mp4 >}}  -->
+
+<!-- I ended up cropping it as well here: https://express.adobe.com/nb-NO/tools/crop-video  -->
+
+<!-- VAn Tao stuff . No need to render this -->
+
+```{r, eval=FALSE}
+load("../data/ref_data_TVB.Rdata")
+load("../data/ecm_data_TVB.Rdata")
+library(tidyverse)
+
+ecm_data_TVB_pred <- ecm_data_TVB %>%
+    filter(store_id == "4097") %>%
+    dplyr::select(name, store_id, kwh, start_date, temps, hour, weekday, month, week, yw, ym) %>%
+    group_by(name, store_id, start_date) %>%
+    summarise(
+      kwh = sum(kwh, na.rm = TRUE),
+      t = mean(temps, na.rm = TRUE),
+      e2 = mean(temps^2, na.rm = TRUE),
+      b3 = mean(temps^3, na.rm = TRUE),
+      hour = dplyr::first(hour),
+      weekday = dplyr::first(weekday),
+      month = dplyr::first(month),
+      week = dplyr::first(week),
+      yw = dplyr::first(yw),
+      ym = dplyr::first(ym)
+    ) %>%
+    mutate(
+      hour = as.factor(hour),
+      weekday = as.factor(weekday),
+      month = as.factor(month)
+    ) %>%
+    ungroup()
+
+ref_data_TVB_pred <- ref_data_TVB %>%
+    filter(store_id == "4097") %>%
+    dplyr::select(name, store_id, kwh, start_date, temps, hour, weekday, month, week, yw, ym) %>%
+    group_by(name, store_id, start_date) %>%
+    summarise(
+      kwh = sum(kwh, na.rm = TRUE),
+      t = mean(temps, na.rm = TRUE),
+      e2 = mean(temps^2, na.rm = TRUE),
+      b3 = mean(temps^3, na.rm = TRUE),
+      hour = dplyr::first(hour),
+      weekday = dplyr::first(weekday),
+      month = dplyr::first(month),
+      week = dplyr::first(week),
+      yw = dplyr::first(yw),
+      ym = dplyr::first(ym)
+    ) %>%
+    mutate(
+      hour = as.factor(hour),
+      weekday = as.factor(weekday),
+      month = as.factor(month)
+    ) %>%
+    ungroup()
+
+TVB_f <- as.formula("kwh ~ + hour*weekday +
+                      month +
+                      hour*t +
+                      hour*e2 +
+                      hour*b3 +
+                      as.factor(month)*t +
+                      as.factor(month)*e2 +
+                      as.factor(month)*b3 ")
+
+
+vantao <- lm(TVB_f, data = ref_data_TVB_pred) # train the model
+ref_data_TVB_pred$kwh_p <- predict(vantao, newdata = ref_data_TVB_pred) # predicting on the ref data
+ecm_data_TVB_pred$kwh_p <- predict(vantao, newdata = ecm_data_TVB_pred)  # predicting on the ECM data
+
+
+save(ref_data_TVB_pred,file="../data/ref_data_TVB_pred.Rdata") # save the training data with predictions
+save(ecm_data_TVB_pred,file="../data/ecm_data_TVB_pred.Rdata") # save the ECM data with predictions
+
+
+TVB_result <- as_tibble(names(coef(vantao)))
+n_indep_var_van_tao <- n_distinct(TVB_result)
+samp_size <- nrow(ref_data_TVB_pred)
+ref_data_TVB_pred$err_vt <- (ref_data_TVB_pred$kwh - ref_data_TVB_pred$kwh_p)^2
+cv_rmse_TVB <- round(sqrt(sum(ref_data_TVB_pred$err_vt, na.rm = TRUE) / (samp_size - n_indep_var_van_tao - 1)) / mean(ref_data_TVB_pred$kwh, na.rm = TRUE), 3)
+cv_rmse_TVB
+
+```
+
+## Van tao benchmarking model
+
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+::: {.absolute top="15%" left="0%"}
+
+<!-- The actual data in the reference year -->
+```{r}
+#| echo: false
+#| fig-height: 2
+library(tidyverse)
+load("data/ref_data_TVB_pred.Rda")
+
+ref_data_TVB_pred_f <- ref_data_TVB_pred %>% dplyr::filter(start_date >= '2018-04-09 00:00:00' & start_date <= '2018-04-15 23:00:00') # not bad
+
+ggplot(data = ref_data_TVB_pred_f) +
+  geom_line(aes(x = start_date, y = kwh), color = "red") +
+  theme_minimal() +
+  labs(
+    y = "Loads (kW)",
+    x = "Date",
+    title = "Actual loads in week 15 - 2018 (before the retrofitting)"
+  ) 
+```
+
+:::
+
+
+::: {.absolute top="45%" left="5%"}
+::: {style="font-size: 0.50em"}
+::: {.fragment .fade-in-then-out}
+- Train a model on one year of hourly data for 2018
+- Temperature and calendar data
+- Can the model *mimic* how the actual data looks like?
+:::
+:::
+:::
+
+. . .
+
+::: {.absolute top="15%" left="0%"}
+
+<!-- The actual data and the predictions in the reference year -->
+```{r}
+#| echo: false
+#| fig-height: 2
+ref_data_TVB_pred_f <- ref_data_TVB_pred %>% dplyr::filter(start_date >= '2018-04-09 00:00:00' & start_date <= '2018-04-15 23:00:00') # not bad
+# uke 15 i 2018
+
+ggplot(data = ref_data_TVB_pred_f) +
+  geom_line(aes(x = start_date, y = kwh), color = "red") +
+  geom_line(aes(x = start_date, y = kwh_p), color = "blue") +
+  theme_minimal() +
+  labs(
+    y = "Loads (kW)",
+    x = "Date",
+    title = "Actual and predicted loads in week 15 - 2018 (before the retrofitting)"
+  ) 
+```
+
+:::
+
+::: {.absolute top="45%" left="5%"}
+::: {style="font-size: 0.50em"}
+::: {.fragment .fade-in-then-out}
+- Predict the energy consumption in week 15
+- Model seems to perform fairly well
+- `CV-RMSE = 0.087`
+:::
+:::
+:::
+
+. . .
+
+::: {.absolute top="45%" left="0%"}
+
+<!-- The actual data in the reference year -->
+```{r}
+#| echo: false
+#| fig-height: 2
+load("data/ecm_data_TVB_pred.Rdata")
+ecm_data_TVB_pred_f <- ecm_data_TVB_pred %>% dplyr::filter(start_date >= '2021-04-12 00:00:00' & start_date <= '2021-04-18 23:00:00') # not bad
+# uke 15 i 2021
+
+ggplot(data = ecm_data_TVB_pred_f) +
+  geom_line(aes(x = start_date, y = kwh), color = "red") +
+  theme_minimal() +
+  labs(
+    y = "Loads (kW)",
+    x = "Date",
+    title = "Actual loads in week 15 - 2021 (after the retrofitting)"
+  ) 
+```
+
+:::
+
+
+::: {.absolute top="75%" left="5%"}
+::: {style="font-size: 0.50em"}
+::: {.fragment .fade-in-then-out}
+- Use the 2018 model to predict the energy consumption in week 15 in 2021
+- The model predict the energy consumption *as if* the building performed similar to 2018...
+- ...but with the temperature and calendar data from 2021
+:::
+:::
+:::
+
+
+. . .
+
+::: {.absolute top="45%" left="0%"}
+
+<!-- The actual data and the predictions in the reference year -->
+```{r}
+#| echo: false
+#| fig-height: 2
+load("data/ecm_data_TVB_pred.Rdata")
+ecm_data_TVB_pred_f <- ecm_data_TVB_pred %>% dplyr::filter(start_date >= '2021-04-12 00:00:00' & start_date <= '2021-04-18 23:00:00') # not bad
+# uke 15 i 2021
+
+ggplot(data = ecm_data_TVB_pred_f) +
+  geom_line(aes(x = start_date, y = kwh), color = "red") +
+  geom_line(aes(x = start_date, y = kwh_p), color = "blue") +
+  theme_minimal() +
+  labs(
+    y = "Loads (kW)",
+    x = "Date",
+    title = "Actual and predicted loads in week 15 - 2021 (after the retrofitting)"
+  ) 
+```
+
+
+:::
+
+
+::: {.absolute top="50%" left="12%"}
+::: {style="font-size: 0.45em"}
+:sunny:
+:::
+:::
+
+::: {.absolute top="60%" left="18%"}
+::: {style="font-size: 0.45em"}
+:first_quarter_moon_with_face:
+:::
+:::
+
+
+
+::: {.absolute top="75%" left="5%"}
+::: {style="font-size: 0.50em"}
+::: {.fragment .fade-in}
+- The energy savings from the retrofitting can be studied in detail
+- Day by day and night versus day
+- Enables a better understanding of the measures that were taken
+:::
+:::
+:::
+
+
+```{r eval=FALSE}
+# Note that running this takes a few minutes, hence the gif is saved and inserted directly into to presentation
+
+library(tidyverse)
+library(gganimate)
+library(ggthemes)
+library(ggrepel)
+library(av) # mp4!
+library(glue)
+library(scales)
+library(lubridate)
+
+
+df_ts_anim <- read_delim("../data/timeseries_animation.csv", ";", escape_double = FALSE, trim_ws = TRUE)
+df_ts_anim$start_date <- dmy_hm(df_ts_anim$start_date)
+#df_ts_anim <- df_ts_anim %>%  gather(forbruk, kwh, kwh:kwh_p) %>% arrange(start_date)
+df_ts_anim <- df_ts_anim %>%  gather(forbruk, kwh, kwh:kwh_p) %>% arrange(desc(forbruk))
+df_ts_anim$teller <- 1:nrow(df_ts_anim)
+df_ts_anim$dagtime <- paste(df_ts_anim$weekday,df_ts_anim$hour,sep = ":") 
+df_ts_anim$forbruk <- ifelse(df_ts_anim$forbruk=="kwh","Actual","Forecast")
+df_ts_anim$weekday <- as.factor(df_ts_anim$weekday)
+
+# timeseries plot for animation
+ts_plot_anim <- ggplot(df_ts_anim, aes(start_date, kwh, color=forbruk, label=forbruk)) + 
+  geom_line(size=0.9, alpha=0.9) + 
+  geom_segment(aes(xend = (max(start_date)-1), yend = kwh), linetype = 2, colour = 'grey') +
+  geom_point(alpha=0.7, size=4) +
+  #geom_label_repel(data=df_ts_anim[3, ],label="Algoritme tenker...\n Laster historiske data \n... Værmelding \n & ...kalenderdata. ",vjust=3) +
+  #geom_label_repel(data=df_ts_anim[8, ],label="Bygg åpnet. \n Økning i forbruk.",vjust=-8) +
+  # geom_label_repel(data=df_ts_anim[27, ],label="Bygg stengt. \n Lavt forbruk.",vjust=4) +
+  # geom_label_repel(data=df_ts_anim[81, ],label="En kald dag. \n Noe økning i forbruk.",vjust=-8) +
+  # geom_label_repel(data=df_ts_anim[154, ],label="Bygget stengt \n på dagtid. ",vjust=-8) +
+  # geom_label_repel(data=df_ts_anim[207, ],label="Alt under kontroll!",vjust=-8) +
+  # geom_label_repel(data=df_ts_anim[218, ],label="Avvik oppdaget!",vjust=6) +
+  # geom_label_repel(data=df_ts_anim[233, ],label="Feil funnet og fikset. \n ",vjust=7) +
+  # geom_label_repel(data=df_ts_anim[323, ],label="Lavere enn prognose. \n Redusert energibruk.",vjust=-0.5) +
+  geom_text(aes(x = max(start_date), label = forbruk, hjust = 0)) +
+  scale_shape_manual(values = c(24, 25)) + 
+  scale_color_manual(values=c("red", "blue")) +
+  coord_cartesian(clip = 'off') + 
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_x_datetime(breaks = pretty_breaks(22)) +
+  theme(axis.text.x=element_text(angle = -90, hjust = 0)) +
+  labs(x = '', y = 'Energibruk') +
+  transition_reveal(teller) + 
+  ease_aes('cubic-in-out') 
+
+
+animate(ts_plot_anim, 
+        fps = 10, 
+        nframes = 7*24*2,
+        duration = 60, 
+        end_pause=90,
+        width=1450,
+        height=650, 
+        renderer = gifski_renderer("test2022_20.gif", loop = F)) 
+
+# rendering the animation
+ts_plot_anim_gif <- animate(ts_plot_anim, fps = 20, 
+                    duration = 70, 
+                    end_pause=90,
+                    width=1150,
+                    height=500,
+                    renderer = gifski_renderer(loop = FALSE)) 
+
+
+
+# english version
+p2_eng <- ggplot(testl, aes(start_date, kwh, color=forbruk, label=forbruk)) + 
+  geom_line(size=0.9, alpha=0.9) + 
+  geom_segment(aes(xend = (max(start_date)-1), yend = kwh), linetype = 2, colour = 'grey') +
+  geom_point(alpha=0.7, size=4) +
+  geom_label_repel(data=testl[3, ],label="Algorithm 'thinking'...\n Loading data \n... Weather forecast \n & ...calenderdata. ",vjust=3) +
+  geom_label_repel(data=testl[8, ],label="Building opened. \n Increased energy use.",vjust=-8) +
+  geom_label_repel(data=testl[27, ],label="Building closed. \n Decreased energy use.",vjust=4) +
+  geom_label_repel(data=testl[81, ],label="A cold day. \n .",vjust=-8) +
+  geom_label_repel(data=testl[154, ],label="Building closed. \n  ",vjust=-8) +
+  geom_label_repel(data=testl[207, ],label="Everything under control!",vjust=-8) +
+  geom_label_repel(data=testl[218, ],label="Error detected!",vjust=6) +
+  geom_label_repel(data=testl[233, ],label="Error located and fixed. \n ",vjust=7) +
+  geom_label_repel(data=testl[323, ],label="Lower than forecast. \n Reduced energy use.",vjust=-0.5) +
+  geom_text(aes(x = max(start_date), label = forbruk, hjust = 0)) +
+  scale_shape_manual(values = c(24, 25)) + 
+  scale_color_manual(values=c("red", "blue")) +
+  coord_cartesian(clip = 'off') + 
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_x_datetime(breaks = pretty_breaks(22)) +
+  theme(axis.text.x=element_text(angle = -90, hjust = 0)) +
+  labs(title="",x = '', y = 'Energyconsumption (kWh)') +
+  transition_reveal(teller) + 
+  ease_aes('cubic-in-out') 
+
+
+hh20_gif <- animate(p2_eng, fps = 20, 
+                    duration = 70, 
+                    end_pause=90,
+                    width=1150,
+                    height=500,
+                    renderer = gifski_renderer(loop = FALSE)) 
+
+
+hh20_gif
+save_animation(hh20_gif, file="hh20_gif.gif")
+
+# ----- save as gif, loops over and over in powerpoint
+library(gganimate)
+animate(p2, fps = 10, 
+        nframes = 7*24*2,
+        duration = 60, 
+        end_pause=90,
+        width=1450,
+        height=650, 
+        renderer = gifski_renderer("hh20.gif", loop = F)) 
+
+# ---- save as movie
+animate(p2,
+        renderer = av_renderer(),
+        width = 1650, height = 650,
+        res = 120,  # playing with the will increase and decrease the details in the animated plot
+        duration = 60,
+        res = 250, fps = 10)
+
+anim_save("hhmpeg.mp4") # version used for the presentation
+warnings()
+
+# ---- english version
+animate(p2_eng,
+        renderer = av_renderer(),
+        width = 1650, height = 650,
+        res = 120,
+        duration = 60,
+        res = 250, fps = 10)
+
+anim_save("hhmpeg_eng.mp4")
+
+```
+
+
+
+

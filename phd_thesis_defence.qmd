@@ -1,0 +1,244 @@
+---
+format: 
+  revealjs:
+    theme: ["fonts_aneo.scss"]
+    css: styles.css
+    slide-number: true
+from: markdown+emoji
+---
+
+
+{{< include slides/_1_frontpage.qmd >}} 
+
+<!-- Front page picture credit
+<a href="https://www.freepik.com/free-photo/green-energy-saving-background-light-bulb-with-trees-remixed-media_15665910.htm#query=sustainability&position=6&from_view=keyword&track=sph">Image by rawpixel.com</a> on Freepik
+-->
+
+
+```{r}
+library(tidyverse)
+```
+
+
+<!-- 1 slide -->
+
+## {.color-slide .vcenter  background-image="figures/asia_vir_2016_lrg.png"}
+
+```{css, echo=FALSE}
+.color-slide, 
+.color-slide h2 {
+ color: white;
+}
+```
+
+<!-- Bullet start -->
+::: {.absolute top="40%" left="10%"}
+::: {style="font-size: 1.5em"}
+
+::: {.fragment .fade-in-then-out}
+Buildings consume about 40% of all produced energy
+:::
+
+:::
+:::
+<!-- Bullet stop -->
+
+<!-- Bullet start -->
+::: {.absolute top="40%" left="15%"}
+::: {style="font-size: 1.5em"}
+
+::: {.fragment .fade-in-then-out}
+Significant contributors to greenhouse gas emission
+:::
+
+:::
+:::
+<!-- Bullet stop -->
+
+<!-- Bullet start -->
+::: {.absolute top="40%" left="10%"}
+::: {style="font-size: 1.5em"}
+
+::: {.fragment .fade-in-then-out}
+Energy efficient buildings is vital to reduce emissions
+:::
+
+:::
+:::
+<!-- Bullet stop -->
+
+
+<!-- {{< include slides/buildings_globally.qmd >}} -->
+<!--https://earthobservatory.nasa.gov/images/90008/night-light-maps-open-up-new-applications-->
+
+
+
+::: {.notes}
+Picture from NASA earth observatory
+Showing city lights during night
+It looks beautiful from space
+But is an ample reminder...
+people are expanding everywhere
+:::
+
+<!-- 4 slide -->
+## Main objectives of thesis
+
+::: {.incremental}
+- Uncertainty about energy savings is a barrier that hinders new renovation projects 
+- Contribute to lower that barrier 
+- Promote action to create more energy eﬀicient buildings
+:::
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.75"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1 / 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+## Agenda 
+
+::: {.incremental}
+
+- Background 
+- Example of energy saving documentation
+- Present the 5 papers 
+- Conclusion
+
+:::
+
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.75"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1 / 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+<!-- 2 slide -->
+<!-- ## Background -->
+
+{{< include slides/_2_background.qmd >}} 
+
+::: {.notes}
+Motivation
+1) Do a good job 
+2) Transparent methods
+3) Personal reason: environmental impact
+:::
+
+
+<!-- 5 slide -->
+## Buildings in Norway
+
+{{< include slides/_3_buildings_in_Norway.qmd >}} 
+
+<!-- 6 slide -->
+
+{{< include slides/_4_just_substraction.qmd >}} 
+
+
+<!-- 7 slide -->
+<!--  Intro to the examples -->
+## Measurement and Verification
+
+{{< include slides/_5_measurement_and_verification.qmd >}}
+
+::: {.notes}
+- The models I will show are based on a consensus approach...
+- International Performance Measurement and Verification Protocol (IPMVP)
+- Initiative from Efficiency Valuation Organization (EVO)
+- They developed a consensus approach to measuring and verifying efficiency investments
+:::
+
+<!-- 8 slide -->
+
+{{< include slides/_6_ET_curve_sequentially.qmd >}} 
+
+
+::: {.notes}
+- Next we move on from 52 to 8760 observations
+- Lets look at the data
+:::
+
+<!-- 9 slide -->
+## A year of hourly data
+
+{{< include slides/_7_heatmap.qmd >}} 
+
+
+::: {.notes}
+- We have opening hours 
+- Weekends
+- Shifting seasons
+- Temp. difference across day and night..months
+:::
+
+<!-- 10 slide -->
+<!-- Showing the Van Tao examples  -->
+{{< include slides/_8_model_timeseries_animation.qmd >}}
+
+::: {.notes}
+- The challenge is that we are depending on the energy analyst!
+- We have developed a web framework to set models into production
+:::
+
+<!-- 11 slide -->
+<!--  Showing the web application -->
+
+{{< include slides/_9_paper3.qmd >}}
+{{< include slides/_10_baseline_module.qmd >}}
+
+
+<!-- 2 slide -->
+<!-- ## Papers in thesis -->
+{{< include slides/_11_paper4.qmd >}}
+{{< include slides/_12_paper5.qmd >}}
+
+
+<!-- 16 slide -->
+{{< include slides/_13_01_guiteres_IPCC_speach.qmd >}}
+
+::: {.notes}
+Double-click on the heading to start "voice-over"
+Academic in early days
+Politics -> Prime minister of Portugal 
+Later The High Commissioner for Refugees
+One of the world's largest humanitarian organizations
+Since 2017 Guitteres has served as the secretary-general of the United Nations 
+He has probably read thousand of reports!
+This is what he said during the press conference
+:::
+
+<!-- 17 slide -->
+## Conclusion
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1 - 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.75"}  
+:::
+:::
+
+
+- Documented energy savings for grocery stores were 35%
+- Savings potential in food retail stores is 700 GWh
+- ≈ energy demand for 55 000 households
+
+{{< include slides/_14_thank_you.qmd >}}
+
+
+

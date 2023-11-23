@@ -1,0 +1,48 @@
+
+## Background
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.75"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1 / 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+:::: {.columns}
+
+::: {.absolute top="20%" left="0%"}
+::: {.column width="45%"}
+
+
+![](figures/aneo_bck.png){width=90%}
+:::
+:::
+
+::: {.column width="55%"}
+
+<!-- Bullet start -->
+::: {.absolute top="22%" left="40%"}
+::: {style="font-size: 0.7em"}
+::: {.incremental}
+- Retrofitting projects of grocery stores
+- Contracts with *guaranteed* energy savings
+- Energy monitoring system for 2 200 retail stores
+- My main responsibilities are to *document and monitor the energy savings*
+
+:::
+:::
+:::
+<!-- Bullet stop -->
+
+:::
+
+::::
+
+
+
+
+

@@ -1,0 +1,28 @@
+
+```{mermaid}
+flowchart LR
+  A(Data driven applications <br/> for energy efficiency in buildings) --> B(Measurement & Verification)
+  A(Data driven applications <br/> for energy efficiency in buildings) --> C(Prediction and recommendation)
+  B(Measurement & <br/> Verification) --> D(Baseline estimation)
+  B(Measurement & <br/> Verification) --> E(Non-routine detection)
+  B(Measurement & <br/> Verification) --> F(Uncertainty estimation)
+  C(Prediction & <br/> recommendation) --> G(Hybrid methods)
+  C(Prediction & <br/> recommendation) --> H(Deterministic methods)
+  C(Prediction & <br/> recommendation) --> I(Purely data-driven methods)
+  style A fill:#7393B3
+  style B fill:#6082B6
+  style D fill:#6082B6
+  style E fill:#6082B6
+  style F fill:#6082B6
+  style C fill:#8A9A5B
+  style G fill:#8A9A5B
+  style H fill:#8A9A5B
+  style I fill:#8A9A5B
+```
+
+<!-- figure is over the aside note...!  -->
+::: aside
+schematic outline published by Grillone et al. (2020) where they review data-driven and deterministic methods to quantify energy savings and to predict retrofitting scenarios in buildings
+:::
+
+

@@ -1,0 +1,78 @@
+/*-- scss:defaults --*/
+/*-- fonts --*/
+$presentation-heading-font: 'GT Planar 30';
+$mainFont: 'GT Planar';
+
+/* Malking the footer smaller  */
+.reveal .footer {
+  font-size: 0.35em !important;
+  text-align: right !important;
+}
+
+
+/*--  Box around the different things I would like to highlight  --*/
+.redbox {
+  color: #cc0000;
+  background-color: transparent;
+  margin: 1px;
+  padding: 5px 2px 5px 2px;
+  height: 425px;
+  border: 2px solid;
+}
+
+
+.bluebox {
+  color: #0000FF;
+  background-color: transparent;
+  margin: 1px;
+  padding: 5px 2px 5px 2px;
+  height: 118px;
+  border: 2px solid;
+}
+
+.blueboxbase {
+  color: #0000FF;
+  background-color: transparent;
+  margin: 1px;
+  padding: 5px 2px 5px 2px;
+  height: 50px;
+  border: 1px solid;
+}
+
+.blueboxbasesmall {
+  color: #0000FF;
+  background-color: transparent;
+  margin: 1px;
+  padding: 5px 2px 5px 2px;
+  height: 40px;
+  border: 1px solid;
+}
+
+.blueboxtiny {
+  color: #0000FF;
+  background-color: transparent;
+  margin: 1px;
+  padding: 5px 2px 5px 2px;
+  height: 25px;
+  border: 1px solid;
+}
+
+.redboxpapers {
+  color: #cc0000;
+  background-color: transparent;
+  margin: 1px;
+  padding: 5px 2px 5px 2px;
+  height: 125px;
+  border: 2px solid;
+}
+
+
+.sectionhead {
+  font-size: 0.23em;
+  text-align: left;
+  margin: 1px;
+  padding-left: 13px;
+  width: 150px;
+  border-left: 4px solid;
+  border-color: #5A5A5A;
+}

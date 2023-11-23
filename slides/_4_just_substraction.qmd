@@ -1,0 +1,350 @@
+---
+format: 
+  revealjs:
+    theme: ["../fonts_aneo.scss"]
+    css: ../styles.css
+from: markdown+emoji
+---
+
+## Documentation of energy savings
+
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.75"} </br> 
+[Paper 1 / 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+::: {.absolute top="%" left="0"}
+::: {style="text-align: center"}
+
+
+<!-- Before you get the results from the retrofitting -->
+```{r, fig.width=4.5,fig.height=6}
+library(tidyverse)
+options(scipen=999)
+status <- c("Before retrofitting \n (2018)", "After retrofitting \n (2021)")
+kwh <- c(800000, 0)
+df <- tibble(status,kwh)
+
+status_before <- "Before retrofitting"
+kwh_before <- 800000
+df_before <- tibble(status_before,kwh_before)
+
+ggplot(df, aes(x = reorder(status, -kwh), y = kwh)) +
+  geom_col(width = 0.6, 
+           fill="steelblue",
+           position = position_dodge(0.1)) +
+  theme_minimal() +
+  geom_text(aes(label=format(kwh, big.mark = " ", scientific = FALSE)), vjust=1.6, color="white", size=4) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  xlab("") +
+  ylab("Yearly energy consumption (kWh)") + 
+  scale_y_continuous(labels=function(x) format(x, big.mark = " ", scientific = FALSE))
+
+```
+
+:::
+:::
+
+
+::: {.absolute top="27%" left="30%"}
+::: {style="color: #619CFF; font-size: 3em"}
+
+? 
+
+:::
+:::
+
+
+
+::: {.absolute top="20%" left="50%"}
+::: {style="font-size: 0.7em"}
+
+
+
+::: {.fragment .fade-in-then-out}
+Example 
+
+- Retrofitting of a grocery store in 2020 
+- Ventilation and cooling system are upgraded. New LED-lights
+- You guarantee the customer a 50% reduction of energy use
+:::
+
+:::
+:::
+
+
+::: {.absolute top="30%" left="50%"}
+::: {style="font-size: 0.7em"}
+
+::: {.fragment .fade-in-then-out}
+
+A year after the retrofitting the results are finally available...
+
+:::
+
+
+:::
+:::
+
+
+
+
+. . .
+
+::: {.absolute top="%" left="0"}
+::: {style="text-align: center"}
+
+<!-- After you get the results -->
+```{r, fig.width=4.5,fig.height=6}
+options(scipen=999)
+# ---- make data from Enova ----
+status <- c("Before retrofitting \n (2018)", "After retrofitting \n (2021)")
+kwh <- c(800000, 400000)
+df <- tibble(status,kwh)
+
+status_before <- "Before retrofitting"
+kwh_before <- 800000
+df_before <- tibble(status_before,kwh_before)
+
+ggplot(df, aes(x = reorder(status, -kwh), y = kwh)) +
+  geom_col(width = 0.6, 
+           fill="steelblue",
+           position = position_dodge(0.1)) +
+  theme_minimal() +
+  geom_text(aes(label=format(kwh, big.mark = " ", scientific = FALSE)), vjust=1.6, color="white", size=4) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  xlab("") +
+  ylab("Yearly energy consumption (kWh)") + 
+  scale_y_continuous(labels=function(x) format(x, big.mark = " ", scientific = FALSE))
+
+```
+
+:::
+:::
+
+
+::: {.absolute top="20%" left="50%"}
+::: {style="font-size: 0.7em"}
+
+::: {.incremental}
+
+- Great! A 50% reduction :sunglasses:
+- Customer argue that the result was because of the mild winter in 2021!
+- You correct for the temperature differences^1^
+
+:::
+
+:::
+:::
+
+::: {.absolute top="100%" left="5%"}
+::: {style="font-size: 0.5em"}
+
+::: {.fragment .fade-in}
+1. More information about adjusting for degree days: <https://www.enova.no/kunnskap/graddagstall/>
+:::
+
+:::
+:::
+
+. . .
+
+::: {.absolute top="%" left="0"}
+::: {style="text-align: center"}
+
+<!-- But are you really sure? -->
+```{r, fig.width=4.5,fig.height=6}
+library(tidyverse)
+options(scipen=999)
+# ---- make data from Enova ----
+status <- c("Before retrofitting \n (2018)", "After retrofitting \n (2021)")
+kwh <- c(800000, 500000)
+df <- tibble(status,kwh)
+
+status_before <- "Before retrofitting"
+kwh_before <- 800000
+df_before <- tibble(status_before,kwh_before)
+
+ggplot(df, aes(x = reorder(status, -kwh), y = kwh)) +
+  geom_col(width = 0.6, 
+           fill="steelblue",
+           position = position_dodge(0.1)) +
+  theme_minimal() +
+  geom_text(aes(label=format(kwh, big.mark = " ", scientific = FALSE)), vjust=1.6, color="white", size=4) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  xlab("") +
+  ylab("Yearly energy consumption (kWh)") + 
+  scale_y_continuous(labels=function(x) format(x, big.mark = " ", scientific = FALSE))
+
+```
+
+:::
+:::
+
+
+::: {.absolute top="28%" left="27%"}
+::: {style="font-size: 0.5em"}
+
+Corrected for </br>
+temperature
+
+:::
+:::
+
+## Documentation of energy savings
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.75"} </br> 
+[Paper 1 / 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+::: {.absolute top="%" left="0"}
+::: {style="text-align: center"}
+
+```{r, fig.width=4.5,fig.height=6}
+library(tidyverse)
+options(scipen=999)
+# ---- make data from Enova ----
+status <- c("Before retrofitting \n (2018)", "After retrofitting \n (2021)")
+kwh <- c(800000, 500000)
+df <- tibble(status,kwh)
+
+status_before <- "Before retrofitting"
+kwh_before <- 800000
+df_before <- tibble(status_before,kwh_before)
+
+ggplot(df, aes(x = reorder(status, -kwh), y = kwh)) +
+  geom_col(width = 0.6, 
+           fill="steelblue",
+           position = position_dodge(0.1)) +
+  theme_minimal() +
+  geom_text(aes(label=format(kwh, big.mark = " ", scientific = FALSE)), vjust=1.6, color="white", size=4) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  xlab("") +
+  ylab("Yearly energy consumption (kWh)") + 
+  scale_y_continuous(labels=function(x) format(x, big.mark = " ", scientific = FALSE))
+
+```
+
+:::
+:::
+
+
+
+::: {.absolute top="20%" left="45%"}
+::: {style="font-size: 0.7em"}
+
+
+
+You study the store in more detail...
+
+::: {.incremental}
+- Someone forgot the lights on during night
+- Ventilation on during off-hours
+- Error in the cooling system 
+:::
+
+:::
+:::
+
+::: {.absolute top="50%" left="45%"}
+::: {style="font-size: 0.7em"}
+
+::: {.fragment .fade-in}
+It is not possible to change the weather :snowflake: </br>
+:::
+
+::: {.fragment .fade-in}
+The other issues might have been fixed sooner
+:::
+
+
+:::
+:::
+
+
+
+## Documentation of energy savings
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.75"} </br> 
+[Paper 1 / 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+::: {.absolute top="%" left="0"}
+::: {style="text-align: center"}
+
+```{r, fig.width=4.5,fig.height=6}
+library(tidyverse)
+options(scipen=999)
+# ---- make data from Enova ----
+status <- c("Before retrofitting \n (2018)", "After retrofitting \n (2021)")
+kwh <- c(800000, 500000)
+df <- tibble(status,kwh)
+
+status_before <- "Before retrofitting"
+kwh_before <- 800000
+df_before <- tibble(status_before,kwh_before)
+
+ggplot(df, aes(x = reorder(status, -kwh), y = kwh)) +
+  geom_col(width = 0.6, 
+           fill="steelblue",
+           position = position_dodge(0.1)) +
+  theme_minimal() +
+  geom_text(aes(label=format(kwh, big.mark = " ", scientific = FALSE)), vjust=1.6, color="white", size=4) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=16)) +
+  xlab("") +
+  ylab("Yearly energy consumption (kWh)") + 
+  scale_y_continuous(labels=function(x) format(x, big.mark = " ", scientific = FALSE))
+
+```
+
+:::
+:::
+
+
+::: {.absolute top="20%" left="45%"}
+::: {style="font-size: 0.8em"}
+
+Solution: </br>
+a model to continuously monitor energy savings
+ 
+:::
+:::
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,108 @@
+
+```{r}
+library(tidyverse)
+# ---- make data from Enova ----
+building_category <- c(
+        'Kindergardens',
+        'Apartments',
+        'Food retail stores',
+        'Commercial buildings',
+        'Hotels',
+        'Sports buildings',
+        'Offices',
+        'Culture buildings',
+        'Small industry',
+        'Schools',
+        'Small houses',
+        'Nursing homes',
+        'Hospitals',
+        'Universities')
+
+kwh_m2 <- c(
+  181,
+  143,
+  540,
+  235,
+  272,
+  237,
+  179,
+  190,
+  269,
+  140,
+  166,
+  224,
+  310,
+  261
+)
+
+df_kwh_buildings_norway <- tibble(building_category, kwh_m2) %>%
+  arrange(kwh_m2)
+```
+
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.75"} </br> 
+[Paper 1 / 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+## Buildings in Norway
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.75"} </br> 
+[Paper 1 / 5]{style="opacity:0.15"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+```{r}
+library(tidyverse)
+
+# ---- plot of energy intensity in Norwegian buildings ----
+# https://www.enova.no/download?objectPath=upload_images/5C6245BC2AD74248BB629BFA95145AA3.pdf&filename=Enovas%20byggstatistikk%202017.pdf)
+
+ ggplot(df_kwh_buildings_norway, aes(x=reorder(building_category, kwh_m2), y=kwh_m2)) +
+  geom_bar(stat="identity", fill="steelblue") +
+  theme_minimal() +
+  geom_text(aes(label=kwh_m2), vjust=1.6, color="white", size=3) +
+  theme(axis.text=element_text(size=10)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  xlab("") +
+  ylab("kWh/m2") +
+  ggtitle("Yearly energy consumption per square meter in Norwegian building categories") 
+```
+
+::: {.absolute top="20%" left="91.5%" width="80"}
+::: {.fragment .fade-in}
+::: redbox
+:::
+:::
+:::
+
+<!-- Show the box around food retail stores. A lot of tinkering to get this to work! -->
+::: {.absolute top="20%" left="30%"}
+::: {style="color: #cc0000; font-size: 0.5em"}
+::: {.fragment .fade-in}
+Food retail stores has the largest energy 
+intensity among the building categories
+:::
+:::
+:::
+
+
+
+::: {.absolute top="87%" left="0%"}
+::: {style="font-size: 0.5em"}
+Source: Enovas byggstatistikk 2017. Note: The U.S. Energy information Administration (EIA) reports a similar measure for food retail stores with 524 kWh/m2, the highest energy intensity of any building category
+:::
+:::

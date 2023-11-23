@@ -1,0 +1,43 @@
+
+## {.vcenter background-image="figures/green-energy-bck.jpeg"}
+
+
+
+::: {.absolute top="15%" left="40%"}
+::: {style="font-size: 0.75em"}
+
+Increased sustainability in the food retail sector through 
+*Measurement and Verification* of energy conservation measures
+
+:::
+:::
+
+::: {.absolute top="36%" left="40%"}
+::: {style="font-size: 0.63em"}
+
+Økt bærekraft ved *Måling og Verifikasjon* av energitiltak i dagligvaresektoren
+
+:::
+:::
+
+
+::: {.absolute top="50%" left="40%"}
+::: {style="font-size: 0.55em"}
+
+PhD thesis defence </br>
+</br>
+Alexander Severinsen </br>
+Norwegian University of Life Sciences <br>
+School of Economics and Business </br>
+</br>
+April 13, 2023
+
+
+:::
+:::
+
+
+
+
+
+

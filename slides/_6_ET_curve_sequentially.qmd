@@ -1,0 +1,535 @@
+
+<!-- Preparing the data for the plot  -->
+
+```{r}
+#| echo: false
+library(tidyverse)
+library(segmented)
+
+load("data/ref_data_r.Rdata") # BL model training
+load("data/ecm_data_r.Rdata") # BL model scoring  
+
+specify_decimal <- function(x, k) trimws(format(round(x, k), nsmall = k))
+
+      ref_data <- ref_data_r %>% filter(store_id == 4391, year == 2018) # training data for the BL model
+      ecm_data <- ecm_data_r %>% filter(store_id == 4391) # scoring data for the BL model
+      
+      ref_data$before <- "Before retrofitting (2018)"
+      ecm_data$after <- "After retrofitting (2021)"
+
+       # ref_data <- ref_data_r %>% filter(store_id == 4396) # training data for the BL model
+       # ecm_data <- ecm_data_r %>% filter(store_id == 4396) # scoring data for the BL model
+      # get CV_RMSE_TVB from the training data
+
+      # --------  BL model with kWh as dependent ---------------
+
+      fit.glm <- glm(kwh ~ tam, weight = kwh, data = ref_data)
+      fit.seg <- segmented(fit.glm, seg.Z = ~tam, psi = 6)
+
+      # Estimate CV-RMSE
+
+      ref_data$pred_kwh <- predict.segmented(fit.seg, newdata = data.frame(ref_data))
+      n_indep_var <- 2
+      samp_size <- nrow(ref_data)
+      ref_data$err <- (ref_data$kwh - ref_data$pred_kwh)^2
+      cv_rmse_BL <- sqrt(sum(ref_data$err, na.rm = TRUE) / (samp_size - n_indep_var - 1)) / mean(ref_data$kwh)
+      cv_rmse_BL <- round(cv_rmse_BL, 3)
+
+      # Predict energy consumption given no implemented ECMs (to caclculate the savings)
+      ecm_data$pred_kwh <- predict.segmented(fit.seg, newdata = data.frame(ecm_data))
+      pred_kwh_ecm_BL <- sum(ecm_data$pred_kwh)
+      kwh_ecm <- sum(ecm_data$kwh)
+
+      # breaking point, will just in ET - curves sub-titles
+      
+      bpoints <- as.numeric(specify_decimal((fit.seg$psi)[, 2], 1)) # break point from segmented regression
+
+      # Getting the ggplot up and running
+      newx <- c(min(ref_data$tam), bpoints, (max(ref_data$tam)))
+      newy <- predict(fit.seg, data.frame(tam = newx))
+      
+etc <- ggplot() +
+        geom_point(aes(y = kwh, x = tam, color=before), data = ref_data, shape = 1, size = 3) + 
+        labs(title = "Grocery store number 4391") +
+        theme_minimal() +
+        ylim(7000, 35000) + # to force the transition between the slides to be similar
+        xlim(-20, 25) + # to force the transition between the slides to be similar
+        xlab("Weekly average temperature (°C)") +
+        ylab("Weekly energy consumption (kWh)") + 
+        theme(axis.title.x = element_text(margin = margin(t = 8), size = 13),
+        axis.title.y = element_text(margin = margin(r = 8), size = 13)) +
+        theme(legend.position="bottom") +
+        scale_color_manual(values = c("After retrofitting (2021)" = "red",
+                                      "Before retrofitting (2018)" = "blue"),
+                           name="") +
+        scale_y_continuous(labels = function(x) format(x, big.mark = " ",
+                                                       scientific = FALSE),
+                           limits=c(7000,35000))       
+      
+      
+```
+
+
+## Modeling energy savings
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<!-- The actual data and the model for the reference year -->
+```{r}
+#| echo: false
+#| 
+path_BL <- data.frame(tam = newx, kwh = newy)
+etc + 
+  geom_point(aes(y = kwh, x = tam, color=after), data = ecm_data, shape = 1, size = 3) +
+  geom_path(aes(y = kwh, x = tam), data = path_BL, colour = "grey 50", size = 1) +
+  labs(
+    title = ""
+  )
+```
+
+
+```{r}
+#| echo: false
+#| fig-height: 4
+
+load("data/ecm_data_TVB_pred.Rdata")
+ecm_data_TVB_pred_f <- ecm_data_TVB_pred %>% dplyr::filter(start_date >= '2021-04-12 00:00:00' & start_date <= '2021-04-18 23:00:00') # not bad
+# uke 15 i 2021
+
+ggplot(data = ecm_data_TVB_pred_f) +
+  geom_line(aes(x = start_date, y = kwh), color = "red") +
+  geom_line(aes(x = start_date, y = kwh_p), color = "blue") +
+  theme_minimal() +
+  labs(
+    y = "Loads (kW)",
+    x = "Date",
+    title = ""
+  ) 
+```
+
+
+:::
+
+::: {.column width="50%"}
+::: {style="font-size: 0.6em"}
+
+
+::: {.fragment .fade-in}
+Paper 1: Weeks versus hours
+:::
+
+::: {.incremental}
+- Energy savings in 5 retrofitting project
+- *Broken line* versus *Van Tao benchmarking* model
+- Improved approaches to estimate energy savings
+::: 
+<!--Energy savings 25% - 56%  -->
+
+::: {.fragment .fade-in}
+Paper 2: "Easy" versus "advanced" 
+:::
+
+::: {.incremental}
+- Energy savings in 11 retrofitting projects
+- Time series models on hourly level
+- *Van Tao benchmarking* versus *gradient boosting* model
+:::
+
+<!--
+- *Linear regression* versus *Gradient boosting*
+- Estimate energy savings with low expected savings (<10%)
+- Less cost than using sub-meters
+- Both approaches prove reliable
+-->
+
+<!-- Contributions: First time used to document savings in Norwegian food retail sector  -->
+
+::: {.absolute top="87%" left="0%"}
+::: {style="font-size: 0.6em"}
+::: {.callout-note appearance="minimal"}
+
+
+Severinsen, Alexander, and Øystein Myrland. 2022. *"Statistical learning to estimate energy savings from retrofitting in the Norwegian food retail market"*. Renewable and Sustainable Energy Reviews, Volume 167, 112691. <https://doi.org/10.1016/j.rser.2022.112691> </br>
+Severinsen, Alexander, and Rob J. Hyndman. 2019. *"Quantification of Energy Savings from Energy Conservation Measures in Buildings Using Machine Learning".* In ECEEE Summer Study Proceedings, 757--66, <https://www.eceee.org/library/conference_proceedings/eceee_Summer_Studies/2019/4-monitoring-and-evaluation-for-greater-impact/quantification-of-energy-savings-from-energy-conservation-measures-in-buildings-using-machine-learning/>
+
+
+:::
+:::
+:::
+
+
+:::
+:::
+
+::::
+
+
+## Energy Temperature curve
+
+<!-- Showing only the training data -->
+<!-- Comment - it is not obvious that each point is a week!? -->
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+```{r}
+#| echo: false
+
+etc
+```
+
+## Energy Temperature curve
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+<!-- in a cold week -->
+
+```{r}
+#| echo: false
+etc +
+   geom_segment(aes(x =-20, y = 30500, xend = -16, yend = 30500), arrow = arrow(length=unit(.3, 'cm'), ends = "first", type = "closed"),  color="blue", linetype = 2) +
+   geom_segment(aes(x = -16, y =7000,   xend=-16, yend=30500), arrow = arrow(length=unit(.3, 'cm'), ends = "first", type = "closed"), color="blue", linetype = 2)  
+
+# 30768
+```
+
+::: {.absolute top="23%" left="8%"}
+::: {style="font-size: 0.35em"}
+**30 768 kWh in week 9**
+:::
+:::
+
+::: {.absolute top="65%" left="15%"}
+::: {style="font-size: 0.35em"}
+**-16 $^\circ$C**
+:::
+:::
+
+## Energy Temperature curve
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+<!-- in a warm week -->
+
+```{r}
+#| echo: false
+etc +
+   geom_segment(aes(x =-20, y = 18000, xend = 22, yend = 18000), arrow = arrow(length=unit(.3, 'cm'), ends = "first", type = "closed"), color="red", linetype = 2) +
+   geom_segment(aes(x = 22, y =7000,   xend=22, yend=18000), arrow = arrow(length=unit(.3, 'cm'), ends = "first", type = "closed"), color="red", linetype = 2) 
+```
+
+::: {.absolute top="46%" left="77%"}
+::: {style="font-size: 0.35em"}
+**17 596 kWh in week 30**
+:::
+:::
+
+::: {.absolute top="64%" left="85%"}
+::: {style="font-size: 0.35em"}
+**22 $^\circ$C**
+:::
+:::
+
+<!-- Showing only the training data with an animate-->
+
+```{r eval=FALSE}
+#| echo: false
+et_anim <- ggplot(aes(y = kwh, x = tam), data = ref_data) +
+        geom_point(shape = 1, colour = "blue", size = 3) +
+        theme_minimal() +
+        xlab("Weekly average temperature (°C)") +
+        ylab("Weekly energy consumption (kWh)") +
+       # gganimate part
+        labs(title = 'Store-id 4391. Year & Week: {closest_state}') +
+        transition_states(week,
+                          transition_length = 10) + 
+        shadow_mark()
+
+# this part is just to slow down the animation
+animate(et_anim,
+        start_pause = 10,
+        duration = 35,
+        nframes = 52,
+        renderer = gifski_renderer(loop = FALSE)) 
+
+```
+
+## Energy Temperature curve
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+<!--Showing the reference and the ECM data  -->
+
+```{r}
+#| echo: false
+etc + 
+  geom_point(aes(y = kwh, x = tam, color=after), data = ecm_data, shape = 1, size = 3) 
+  
+```
+
+<!-- Now we don't need a model to look at the savings at the same temperature interval   -->
+
+<!-- Lets find a week in both periods that are at the same temperature interval   -->
+
+## Energy Temperature curve
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+<!--Showing the reference, ECM and arrow  -->
+
+```{r}
+#| echo: false
+etc + 
+  geom_point(aes(y = kwh, x = tam, color=after), data = ecm_data, shape = 1, size = 3) +
+  geom_segment(aes(x=-7.3, y=10500, xend=-7.3, yend=19700), arrow = arrow(length=unit(.5, 'cm')), color = "blue")
+
+
+```
+
+::: {.absolute top="30%" left="30%" width="100"}
+::: bluebox
+:::
+:::
+
+::: {.absolute top="19%" left="27%"}
+::: {style="font-size: 0.5em"}
+A lot of variation in the year you are comparing against </br> That is, one reason, why a model is useful! </br>
+:::
+:::
+
+## Energy Temperature curve
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+<!-- Showing the model with winter savings  -->
+
+```{r}
+#| echo: false
+path_BL <- data.frame(tam = newx, kwh = newy)
+
+etc + 
+  geom_point(aes(y = kwh, x = tam, color=after), data = ecm_data, shape = 1, size = 3) 
+
+
+```
+
+::: {.absolute top="25%" left="45%"}
+::: {style="font-size: 0.6em"}
+<!--Peogressivly show line code  -->
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "|1|2|3|4|5"
+
+library(segmented)
+load(data_2018) # Before retrofitting (2018)
+fit.glm <- glm(kwh ~ tam, weight = kwh, data = data_2018)
+fit.seg <- segmented(fit.glm, seg.Z = ~tam, psi = 6)
+ref_data$pred_kwh <- predict.segmented(fit.seg, newdata = data_2018)
+```
+:::
+:::
+
+## Energy Temperature curve
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+<!-- Show the Broken Line -->
+
+```{r}
+#| echo: false
+path_BL <- data.frame(tam = newx, kwh = newy)
+
+etc + 
+  geom_point(aes(y = kwh, x = tam, color=after), data = ecm_data, shape = 1, size = 3) +
+  geom_path(aes(y = kwh, x = tam), data = path_BL, colour = "grey 50", size = 1)  # The Broken Line model 
+
+
+```
+
+
+<!--CV- RMSE -->
+
+::: {.fragment .fade-in}
+::: {.absolute top="25%" left="45%"}
+::: {style="font-size: 0.5em"}
+-   Reliable model `CV-RMSE < 0.2`^1^
+:::
+:::
+:::
+
+::: {.absolute top="91%" left="5%"}
+::: {style="font-size: 0.45em"}
+
+::: {.fragment .fade-in}
+^1^CV-RMSE = Coefficient of Variation Root Mean Square Error. International Performance Measurement and Verification Protocol (IPMVP), Efficiency Valuation Organization (EVO). <https://evo-world.org/en/products-services-mainmenu-en/protocols/ipmvp>
+:::
+
+:::
+:::
+
+
+## Energy Temperature curve
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+<!-- Showing the model with winter savings  -->
+
+```{r}
+#| echo: false
+path_BL <- data.frame(tam = newx, kwh = newy)
+
+etc + 
+  geom_point(aes(y = kwh, x = tam, color=after), data = ecm_data, shape = 1, size = 3) +
+  geom_path(aes(y = kwh, x = tam), data = path_BL, colour = "grey 50", size = 1) + # The Broken Line model 
+  geom_segment(aes(x=-7.3, y=10500, xend=-7.3, yend=26000), arrow = arrow(length=unit(.5, 'cm')), color="blue") +
+  geom_segment(aes(x =-20, y = 26000, xend = -7.3, yend = 26000), color="blue", linetype = 2) +
+  geom_segment(aes(x =-20, y = 10500, xend = -7.3, yend = 10500), color="blue", linetype = 2)
+
+```
+
+::: {.absolute top="38%" left="10%"}
+::: {style="color: #0000FF; font-size: 0.5em"}
+Savings during the winter
+:::
+:::
+
+## Energy Temperature curve
+
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+<!-- Showing the model with winter and summer savings  -->
+
+```{r}
+#| echo: false
+etc + 
+  geom_point(aes(y = kwh, x = tam, color=after), data = ecm_data, shape = 1, size = 3) +
+  geom_path(aes(y = kwh, x = tam), data = path_BL, colour = "grey 50", size = 1) + # The Broken Line model 
+  geom_segment(aes(x=-7.3, y=10500, xend=-7.3, yend=26000), arrow = arrow(length=unit(.5, 'cm')), color="blue") +
+  geom_segment(aes(x =-20, y = 26000, xend = -7.3, yend = 26000), color="blue", linetype = 2) +
+  geom_segment(aes(x =-20, y = 10500, xend = -7.3, yend = 10500), color="blue", linetype = 2) +
+  geom_segment(aes(x=18, y=8000, xend=18, yend=16000), arrow = arrow(length=unit(.5, 'cm')), color="red") +
+  geom_segment(aes(x =-20, y = 16500, xend = 18, yend = 16500), color="red", linetype = 2) +
+  geom_segment(aes(x =-20, y = 8500, xend = 18, yend = 8500), color="red", linetype = 2) 
+```
+
+::: {.absolute top="38%" left="10%"}
+::: {style="color: #0000FF; font-size: 0.5em"}
+Savings during the winter
+:::
+:::
+
+::: {.absolute top="60%" left="58%"}
+::: {style="color: #FF0000; font-size: 0.5em"}
+Savings during the summer
+:::
+:::
+
+<!-- Showing the model with the changing point  -->
+
+```{r eval=FALSE}
+#| echo: false
+etc + 
+  geom_point(aes(y = kwh, x = tam, color=after), data = ecm_data, shape = 1, size = 3) +
+  geom_path(aes(y = kwh, x = tam), data = path_BL, colour = "grey 50", size = 1) + # The Broken Line model 
+  geom_segment(aes(x=6.7, y=20000, xend=6.7, yend=15000), arrow = arrow(length=unit(.5, 'cm')), color="black") 
+  
+
+```

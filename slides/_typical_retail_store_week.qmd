@@ -1,0 +1,78 @@
+
+```{r eval=TRUE}
+load("data/ref_data_TVB.Rdata")
+# just for single slide testing, the data needs to be loaded in main document
+```
+
+
+```{r}
+library(tidyverse)
+library(cowplot) # to stich together a couple of the plots
+
+ref_data_TVB_w <- ref_data_TVB %>% filter(name=="Extra Sødorptunet" & week=="02")
+ref_data_TVB_w$weekday <- as.factor(weekdays(ref_data_TVB_w$start_date))
+
+# re-arrange the days to follow the natural order of a week when wrapping in ggplot
+neworder <- c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
+ref_data_TVB_w$weekday = factor(ref_data_TVB_w$weekday, levels = neworder) 
+
+ggplot(data=ref_data_TVB_w, aes(x=hour, y=kwh, color=weekday)) +
+  geom_line(alpha=0.6) +
+  facet_wrap( ~ as.factor(weekday), ncol=2) +
+  scale_x_continuous(breaks=seq(0, 23, 1)) +
+  labs(y="Loads (kW)", 
+       x="Hours (00:00-23:00)",
+       color="Day of week",
+       title="") +
+  theme_bw() +
+  theme(axis.text.x=element_text(size=6)) 
+
+```
+
+## Typical retail store
+
+```{r}
+# ---- Showing weekly energy use and its reaction to temperature
+ref_data_TVB$yw <- as.character(format(as.Date(ref_data_TVB$start_date), "%Y-%W"))
+
+# make data for plot
+bygg_average_con <-ref_data_TVB %>% 
+  group_by(name,yw) %>%
+  filter(name=="Extra Sødorptunet", yw!="2017-52", yw!="2018-53") %>%
+  summarise(kwh=sum(kwh),temps=mean(temps))
+
+# plot weekly kWh
+p_load <- bygg_average_con  %>% 
+  ggplot(aes(y=kwh,x=yw,group=1)) +
+  geom_line(alpha=0.7, size=1.1, color="#5A5A5A") +
+  ylab("Weekly consumption (kWh)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  xlab("") +
+  theme_minimal() +
+  theme(text = element_text(size=12)) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+# plot weekly temperature
+p_temps <- bygg_average_con  %>% 
+  ggplot(aes(y=temps,x=yw, color = temps, group=1)) +
+  geom_line(alpha=0.7, size=1.2) +
+  ylab("Temperature (°C)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  xlab("") +
+  theme(text = element_text(size=12)) +
+  scale_colour_gradient2(low = "blue", mid = "yellow" , high = "red", 
+                         midpoint=median(bygg_average_con$temps)) + 
+  theme(legend.position = "none") 
+
+# assemble and display
+p_temps_load <- cowplot::plot_grid(p_load,
+                          p_temps,
+                          nrow = 2)
+p_temps_load
+```
+
+
+

@@ -1,0 +1,198 @@
+
+<!-- Get data  -->
+
+<!-- Note: code is here for replication purposes, heatmap is saved at the end of the code -->
+
+```{r}
+library(ggplot2)
+library(dplyr) # easier data wrangling 
+library(viridis) # colour blind friendly palette, works in B&W also
+library(lubridate) # for easy date manipulation
+library(ggExtra) # because remembering ggplot theme options is beyond me
+library(tidyr) 
+library(readr)
+
+heatmap_1yr <- read_csv("data/heatmap_1yr.csv")
+heatmap_1yr <- tibble(heatmap_1yr)
+heatmap_1yr <- heatmap_1yr %>% dplyr::select(Tidspunkt, Verdi, Temp)
+
+heatmap_1yr <- heatmap_1yr %>% mutate(year = year(Tidspunkt),
+                  month = month(Tidspunkt, label=TRUE),
+                  day = day(Tidspunkt),
+                  hour = hour(Tidspunkt)) %>%
+                  fill(Temp)
+```
+
+```{r}
+
+# Based on an idea from John MacKintosh
+#https://gist.github.com/johnmackintosh/520643a1f82a0c7df00cf949ba98a4e9
+# Modified to look at both temperatures and energy consumption
+
+
+k <-ggplot(heatmap_1yr,aes(day,hour,fill=Temp))+
+  geom_tile(color= "white",size=0.1) + 
+  scale_fill_viridis(name="°C", option = "C")
+k <-k + facet_grid(~month)
+k <-k + scale_y_continuous(trans = "reverse", breaks = unique(heatmap_1yr$hour))
+k <-k + scale_x_continuous(breaks =c(1,10,20,31))
+k <-k + theme_minimal(base_size = 8)
+k <-k + labs(y="Hour",x="Day")
+k <-k + theme(legend.position = "left") + 
+  theme(plot.title=element_text(size = 14))+
+  theme(axis.text.y=element_text(size=6)) +
+  theme(strip.background = element_rect(colour="white"))+
+  theme(plot.title=element_text(hjust=0))+
+  theme(axis.ticks=element_blank())+
+  theme(axis.text=element_text(size=7))+
+  theme(legend.title=element_text(size=8))+
+  theme(legend.text=element_text(size=6))+
+  theme(axis.title.x=element_blank())+
+  ggExtra::removeGrid()
+
+```
+
+```{r}
+p <-ggplot(heatmap_1yr,aes(day,hour,fill=Verdi))+
+  geom_tile(color= "white",size=0.1) + 
+  scale_fill_viridis(name="kW")
+p <-p + facet_grid(~month)
+p <-p + scale_y_continuous(trans = "reverse", breaks = unique(heatmap_1yr$hour))
+p <-p + scale_x_continuous(breaks =c(1,10,20,31))
+p <-p + theme_minimal(base_size = 8)
+p <-p + labs(x="Day", y="Hour")
+p <-p + theme(legend.position = "left") + 
+  theme(plot.title=element_text(size = 14))+
+  theme(axis.text.y=element_text(size=6)) +
+  theme(strip.background = element_rect(colour="white"))+
+  theme(plot.title=element_text(hjust=0))+
+  theme(axis.ticks=element_blank())+
+  theme(axis.text=element_text(size=7))+
+  theme(legend.title=element_text(size=8))+
+  theme(legend.text=element_text(size=6))+
+  ggExtra::removeGrid()
+
+```
+
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+```{r}
+
+library(ggpubr)
+hm <- ggarrange(k,p, nrow = 2) 
+hm
+```
+
+::: {.absolute top="95%" left="0%"}
+::: {style="font-size: 0.65em"}
+Temperature (°C) and energy consumption (kWh) for a grocery store (n=8760).
+:::
+:::
+
+## A year of hourly data
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 1-2 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+```{r}
+Features <- c(
+  "Month",
+  "Week",
+  "Hour",
+  "Week x Hour",
+  "Temperature",
+  "Temperature\U00B2",
+  "Temperature\U00B3",
+  "Temperature x Month",
+  "Temperature\U00B2 x Month",
+  "Temperature\U00B3 x Month",
+  "Temperature x Hour",
+  "Temperature\U00B2 x Hour",
+  "Temperarure\U00B3 x Hour"
+)
+variables <- tibble(Features)
+```
+
+
+
+
+:::: {.columns}
+
+::: {.column width="80%"}
+
+```{r}
+hm
+```
+
+:::
+
+
+
+::: {.column width="20%"}
+
+::: {.absolute top="12%" left="76%"}
+```{r}
+library(gt)
+
+variables %>%
+  gt() %>%gt::cols_width(Features ~ gt::px(150)) %>%
+  tab_options(
+    table.font.size = px(11L)
+  ) 
+```
+:::
+
+::: {.absolute top="70%" left="5%"}
+::: {style="font-size: 0.45em"}
+::: {.fragment .fade-in}
+
+Hong, Tao. 2010. “Short Term Electric Load Forecasting.” PhD thesis. <https://repository.lib.ncsu.edu/handle/1840.16/6457>
+
+::: {.incremental}
+- *Tao Vanilla* benchmarking model (Linear regression)
+- Benchmark model in the GEFCom2012 load forecasting competition
+- Best 25 of 100 teams
+:::
+
+
+:::
+:::
+:::
+
+:::
+
+
+
+
+::::
+
+::: {.absolute top="95%" left="0%"}
+::: {style="font-size: 0.65em"}
+Temperature (°C) and energy consumption (kWh) for a grocery store (n=8760).
+:::
+:::
+
+
+
+<!-- Use one of the callout notes to attention the Kaggle comp. -->
+<!-- Hong wrote a thesis about how good this model was! 
+Easy to implement, fast, and accurate-->

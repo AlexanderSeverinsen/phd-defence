@@ -1,0 +1,48 @@
+---
+title: ""
+format: revealjs
+---
+
+```{r eval=FALSE}
+#REMEMBER THAT THE MAIN DOCUMENT DOES NOT LOOK IN THIS FOLDER!
+library(tidyverse)
+load("../data/typical_food_retail_descriptives.Rdata") # yearly consumption for tpical food retail stores
+
+
+# summing up the data to yearly level, for the introduction
+
+```
+
+
+```{r}
+library(reactable)
+library(reactablefmtr)
+library(htmltools)
+reactable(
+  yearly_consumption,
+  outlined = TRUE,
+  columns = list(
+    store_id = colDef(name = "Store-Id"),
+    gross_area = colDef(html = TRUE, 
+                        "Gross area (m<sup>2</sup>)",
+                        format= colFormat(separators = TRUE)),
+    tot_kwh = colDef(name = "Yearly kWh",
+                     format = colFormat(separators = TRUE)),
+    kwh_m2 = colDef(html = TRUE, 
+                    name = "kWh/m<sup>2</sup>",
+                    format = colFormat(digits=0))
+  )
+) %>% 
+  add_subtitle(
+    subtitle = 'Yearly energy consumption (2018), gross area (m2) and energy intensity (kWh/m2)',
+    font_size = 20,
+    font_color = '#666666',
+    margin = reactablefmtr::margin(t=10,r=0,b=15,l=0)
+  ) %>% 
+  add_source(
+    source = 'Energy data collected from meter readings for the whole of the buildings',
+    font_style = 'italic'
+  )
+```
+
+

@@ -1,0 +1,19 @@
+
+## The Tao Vanilla Benchmarking model
+
+```{=tex}
+\begin{gather*}
+Y_t=\beta_0+ \beta_1 Month_t+ \beta_2 DoW_t+ \beta_3 Hour_t+ \beta_4 DoW_tHour_t + \\ 
+   \beta_5 Temp_t + \beta_6 Temp^2_t+ \beta_7 Temp^3_t + \beta_8 Temp_tMonth_t+ \\
+    \beta_9 Temp^2_tMonth_t + \beta_{10} Temp^3_tMonth_t + \\
+   \beta_{11}  Temp_tHour_t+ \beta_{12} Temp^2_tHour_t + \beta_{13}Temp^3_tHour_t +  \\
+   \beta_{13} Trend + \beta_{14} Load_{t-1}
+\end{gather*}
+```
+
+::: {.callout-note}
+Note that $Trend$ and $Load_{t-1}$ (the previous hour) is not used in our model, we only want to use the data within the reference period.
+:::
+
+
+

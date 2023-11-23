@@ -1,0 +1,96 @@
+
+## Monitoring energy savings
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 3 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+
+::: {.absolute top="15%" left="0%"}
+<!--https://unpkg.com/mermaid@0.5.6/exdoc/all.html#styling-and-classes -->
+
+![](figures/mermaid_p1.png){width=50%}
+
+:::
+
+
+
+::: {.absolute top="15%" left="55%"}
+::: {style="font-size: 0.6em"}
+::: {.incremental}
+- Energy data collected from Elhub on an hourly level 
+- Temperature data was collected from Met.no through publicly open API
+- Building data: Location, name and size through customer API
+:::
+:::
+:::
+
+::: {.notes}
+- ELhub = central repository for meter readings for all buildings in Norway
+- Production and consumption
+- Owned by Statnett (datterselskap)
+:::
+
+## Monitoring energy savings
+
+::: {.absolute top="0" left="100%"}
+::: {.sectionhead}
+[Objectives]{style="opacity:0.15"} </br> 
+[Agenda]{style="opacity:0.15"} </br> 
+[Background]{style="opacity:0.15"} </br> 
+[Examples]{style="opacity:0.15"} </br> 
+[Paper 3 / 5]{style="opacity:0.75"} </br> 
+[Conclusion]{style="opacity:0.15"}  
+:::
+:::
+
+::: {.absolute top="15%" left="5%"}
+<!--  Colors from https://www.schemecolor.com/blue-grey.php?utm_content=cmp-true -->
+![](figures/mermaid_p2.png){width=50%}
+:::
+
+
+
+::: {.absolute top="25%" left="55%"}
+
+::: {style="font-size: 0.5em"}
+::: {.incremental}
+- Reactive programming using `R/Shiny`
+- Fast development & automated energy savings report
+- Not dependent on the energy analyst
+- Open source and transparent
+- As of today 1 241 buildings are monitored continuously 
+:::
+:::
+
+
+::: {style="font-size: 0.55em"}
+::: {.fragment .fade-in}
+::: {.callout-note icon=false appearance="minimal"}
+Severinsen, Alexander, and Øystein Myrland. 2022. “ShinyRBase: Near real-time energy saving models using reactive programming”. Applied Energy, Volume 325, 119798. <https://doi.org/10.1016/j.apenergy.2022.119798>
+:::
+:::
+:::
+
+::: {.fragment .fade-in}
+
+::: {.callout-note appearance="minimal"}
+::: {style="font-size: 0.55em"}
+**Getting the methods into production would have never been possible without the genius code from the fingertips of Einar-Johan Hansen and Stian Berger (@Capia) - and years of endless discussions with Petter Arnestad and many other collaborators!**
+:::
+:::
+
+:::
+
+
+
+:::
+
+

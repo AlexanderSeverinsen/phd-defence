@@ -1,0 +1,103 @@
+
+```{r}
+library(tidyverse)
+library(gt)
+
+Authors <- c("Severinsen, Alexander, and Øystein Myrland", 
+             "Severinsen, Alexander, and Rob J. Hyndman", 
+             "Severinsen, Alexander, and Øystein Myrland", 
+             "Severinsen, Alexander, and Helen Marita Holst Sørensen", 
+             "Fagerström, Jonathan, Kari Aamodt Espegren, Josefine Selj, and Alexander Severinsen")
+             
+Titles <- c("Statistical learning to estimate energy savings from retrofitting in the Norwegian food retail market", 
+            "Quantification of Energy Savings from Energy Conservation Measures in Buildings Using Machine Learning", 
+            "ShinyRBase: Near real-time energy saving models using reactive programming", 
+            "A 3-step framework to benchmark potential and actual energy savings in retrofitting projects", 
+            "Forecasting and Technoeconomic Optimization of PV-Battery Systems for Commercial Buildings")
+Year <- c(2022, 2019, 2022, 2022, 2019)
+
+Published <- c("Renewable and Sustainable Energy Reviews, Volume 167, 112691",
+              "ECEEE Summer Study Proceedings, 757--66",
+              "Applied Energy, Volume 325, 119798",
+              "Unpublished",
+              "ECEEE Summer Study Proceedings, 949--54")
+
+# #Summary <- c("Improving the classical weekly approach using energy-temperature curves. Suggesting a simple, but well specified regression model on an hourly level",
+#              "Comparing the regression model with a more advanced approach. Very similar results.",
+#              "Propose a web application framework to model energy savings",
+#              "Benchmarking energy savings and efficiency from a retrofitting project in 34 grocery stores",
+#              "Investigate profitability of peak shaving where battery storage was only profitable when forecasting was deployed")
+
+Production <- c("Einar-Johan Hansen @ Aneo, Stian Berger @ Capia",
+                "Einar-Johan Hansen @ Aneo, Stian Berger @ Capia",
+                "Einar-Johan Hansen @ Aneo, Stian Berger @ Capia",
+                "",
+                "")
+
+df_papers <- tibble(Authors, Titles, Year, Published, Production)   
+
+```
+
+## Papers in thesis
+
+::: {.absolute top="20%" left="0%"}
+
+```{r}
+# for some obscure reason the ONLY way to size the table is with cols_width
+# I think it is a bug: https://github.com/rstudio/gt/issues/1183
+df_papers %>%
+  slice(1:3) %>%
+  gt() %>%
+  gt::cols_width(Authors ~ gt::px(200),
+                 Titles ~ gt::px(300),
+                 Year ~ gt::px(50),
+                 Published ~ gt::px(200)) %>%
+  cols_hide(columns = c(Production)) 
+```
+:::
+
+## Papers in thesis
+
+::: {.absolute top="20%" left="0%"}
+
+```{r}
+# for some obscure reason the ONLY way to size the table is with cols_width
+# I think it is a bug: https://github.com/rstudio/gt/issues/1183
+df_papers %>%
+  slice(1:3) %>%
+  gt() %>%
+  gt::cols_width(Authors ~ gt::px(200),
+                 Titles ~ gt::px(300),
+                 Year ~ gt::px(50),
+                 Published ~ gt::px(200),
+                 Production ~ gt::px(200))%>%
+  tab_footnote(
+    footnote = "And many other collaborators during the last 6 years",
+    locations = cells_column_labels(
+      columns = Production
+    )
+  )
+```
+
+
+:::
+
+## Papers in thesis
+
+::: {.absolute top="20%" left="0%"}
+
+```{r}
+# for some obscure reason the ONLY way to size the table is with cols_width
+# I think it is a bug: https://github.com/rstudio/gt/issues/1183
+df_papers %>%
+  gt() %>%
+  gt::cols_width(Authors ~ gt::px(200),
+                 Titles ~ gt::px(300),
+                 Year ~ gt::px(50),
+                 Published ~ gt::px(200),
+                 Production ~ gt::px(200)) 
+```
+
+:::
+
+
